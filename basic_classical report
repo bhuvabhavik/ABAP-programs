@@ -1,3 +1,8 @@
+*&---------------------------------------------------------------------*
+*& Report ZPRG_CREPORT1_ZORDH_BB
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
 REPORT zprg_creport1_zordh_bb.
 
 TYPES: BEGIN OF lty_data,
@@ -17,6 +22,12 @@ SELECT ono odate ta curr
   FROM zordh__28
   INTO TABLE lt_data
   WHERE ono = p_ono.
+  
+**or**//in this case only coz we are processing single row
+*SELECT SINGLE ono odate ta curr
+*  FROM zordh__28
+*  INTO TABLE lwa_data
+*  WHERE ono = p_ono.
 
 
   LOOP AT lt_data INTO lwa_data.
