@@ -1,0 +1,24 @@
+REPORT zprg_creport1_zordh_bb.
+
+TYPES: BEGIN OF lty_data,
+         ono   TYPE zdeono__28,
+         odate TYPE zdeodate__28,
+         ta    TYPE zdeta__28,
+         curr  TYPE zdecur__28,
+       END OF lty_data.
+
+DATA: lt_data TYPE TABLE OF lty_data.
+DATA: lwa_data TYPE lty_data.
+
+
+PARAMETERS: p_ono TYPE zdeono__28.
+
+SELECT ono odate ta curr
+  FROM zordh__28
+  INTO TABLE lt_data
+  WHERE ono = p_ono.
+
+
+  LOOP AT lt_data INTO lwa_data.
+    WRITE:/ lwa_data-ono, lwa_data-odate, lwa_data-ta, lwa_data-curr.
+  ENDLOOP.
