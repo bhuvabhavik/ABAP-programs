@@ -16,7 +16,7 @@ TYPES:BEGIN OF lty_final,
       DATA: lwa_final TYPE lty_final.
 
       SELECT a~ono a~odate a~pm a~curr b~oin b~icost
-        FROM zordh__28 AS a join zori_28 AS b
+        FROM zordh__28 AS a join zori_28 AS b 
         ON a~ono = b~ono
         INTO TABLE lt_final
         WHERE a~ono in s_ono.
