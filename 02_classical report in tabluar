@@ -1,0 +1,38 @@
+REPORT zprg3_creport_join_bb.
+
+TYPES:BEGIN OF lty_final,
+        ono   TYPE zdeono__28,
+        odate	TYPE zdeodate__28,
+        pm    TYPE zdepm__28,
+        curr  TYPE zdecur__28,
+        oin	  TYPE zdeoitmno_28,
+        icost	TYPE ZDEITMCOST__28,
+      END OF lty_final.
+
+      DATA: lv_ono TYPE zdeono__28.
+      SELECT-OPTIONS s_ono FOR lv_ono.
+
+      DATA: lt_final TYPE table of lty_final.
+      DATA: lwa_final TYPE lty_final.
+
+      SELECT a~ono a~odate a~pm a~curr b~oin b~icost
+        FROM zordh__28 AS a left outer join zori_28 AS b
+        ON a~ono = b~ono
+        INTO TABLE lt_final
+        WHERE a~ono in s_ono.
+
+WRITE:/ sy-uline(80).
+WRITE:/ sy-vline,TEXT-001, 15 sy-vline, TEXT-002, 27
+sy-vline, TEXT-003, 41 sy-vline, TEXT-004, 52 sy-vline,
+TEXT-005,68 sy-vline, TEXT-006,80 sy-vline.
+WRITE:/ sy-uline(80).
+        loop AT lt_final into lwa_final.
+          WRITE:/ sy-vline, lwa_final-ono UNDER TEXT-001,
+           15 sy-vline,lwa_final-odate UNDER TEXT-002,
+           27 sy-vline,lwa_final-pm UNDER TEXT-003,
+           41 sy-vline,lwa_final-curr UNDER TEXT-004,
+           52 sy-vline, lwa_final-oin UNDER TEXT-005,
+           68 sy-vline, lwa_final-icost UNDER TEXT-006.
+          WRITE:80 sy-vline.
+          WRITE:/ sy-uline(80).
+          ENDLOOP.
