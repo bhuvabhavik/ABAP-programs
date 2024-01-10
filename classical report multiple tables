@@ -47,6 +47,8 @@ TYPES: BEGIN OF lty_final,
 
 DATA: lt_final TYPE TABLE OF lty_final.
 DATA: lwa_final TYPE lty_final.
+
+DATA: lv_flag TYPE boolean.
 "merging 2 internal table data into final internal table.
 LOOP AT lt_data INTO lwa_data.
   LOOP AT lt2_data INTO lwa2_data WHERE ono = lwa_data-ono.
@@ -58,8 +60,17 @@ LOOP AT lt_data INTO lwa_data.
     lwa_final-icost = lwa2_data-icost.
     APPEND lwa_final TO lt_final.
     CLEAR: lwa_final.
-
+    lv_flag = 'X'.
   ENDLOOP.
+  IF lv_flag = ' '.
+    lwa_final-ono = lwa_data-ono.
+    lwa_final-odate = lwa_data-odate.
+    lwa_final-pm = lwa_data-pm.
+    lwa_final-curr = lwa_data-curr.
+    APPEND lwa_final TO lt_final.
+    CLEAR: lv_flag.
+  ENDIF.
+
 ENDLOOP.
 
 LOOP AT lt_final INTO lwa_final.
