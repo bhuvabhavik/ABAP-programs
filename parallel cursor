@@ -1,3 +1,7 @@
+the objective is to get the output with 2 columns id and cost for example id 1 has done total shopping of x amount (the total of all the item cost)
+
+
+
 " inital data table s
 types : BEGIN OF ty_item,
       id  type  i,
