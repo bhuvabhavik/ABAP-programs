@@ -10,3 +10,6 @@ time has been reached).
 ■ The example of specific actions are mouse click, pressing a key etc. The example of
 specific occurrence is running out of memory etc.
 69|
+![image](https://github.com/bhuvabhavik/ABAP/assets/49744703/aab54ee5-653e-4f9c-826b-615797a0c178)
+
+INITIALISATION REQUIRED FOR LOGICAL CALCULATED VALUE ELSE WE CAN USE DIRECT DEFAULT TOO
