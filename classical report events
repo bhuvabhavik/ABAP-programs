@@ -1,0 +1,209 @@
+
+REPORT zprg_creport_events_bb LINE-COUNT 10(2).
+
+
+TYPES: BEGIN OF lty_data,
+         ono   TYPE zdeono__28,
+         odate TYPE zdeodate__28,
+         pm    TYPE zdepm__28,
+         curr  TYPE zdecur__28,
+       END OF lty_data.
+DATA: lt_data TYPE TABLE OF lty_data.
+DATA: lwa_data TYPE lty_data.
+
+DATA: lv_odate TYPE zdeodate__28.
+DATA: lv_pm TYPE zdepm__28.
+DATA: lv_curr TYPE zdecur__28.
+
+SELECT-OPTIONS s_odate FOR lv_odate NO-EXTENSION.
+SELECT-OPTIONS s_pm FOR lv_pm NO INTERVALS.
+SELECT-OPTIONS s_curr FOR lv_curr NO INTERVALS MODIF ID cur.
+PARAMETERS: p_chk1 TYPE c AS CHECKBOX USER-COMMAND select.
+"structure for payment help internaltable.
+TYPES: BEGIN OF lty_currency,
+         curr TYPE zdecur__28,
+         desc TYPE desc40,
+       END OF lty_currency.
+DATA: lt_currency TYPE TABLE OF lty_currency.
+DATA:  lwa_currency TYPE lty_currency.
+
+
+TYPES: BEGIN OF lty_payment,
+         pm   TYPE zdepm__28,
+         desc TYPE desc40,
+       END OF lty_payment.
+DATA: lt_payment TYPE TABLE OF lty_payment.
+DATA: lwa_payment TYPE lty_payment.
+DATA: lt_links TYPE TABLE OF tline.
+
+
+
+
+INITIALIZATION.
+  s_odate-sign = 'I'.
+  s_odate-option = 'BT'.
+  s_odate-low = sy-datum - 100.
+  s_odate-high = sy-datum.
+  APPEND s_odate.
+
+  lwa_currency-curr ='INR'.
+  lwa_currency-desc = 'Indian Rupees'.
+  APPEND lwa_currency TO lt_currency.
+  CLEAR:lwa_currency.
+
+  lwa_currency-curr = 'USD'.
+  lwa_currency-desc = 'US Dollars'.
+  APPEND lwa_currency TO lt_currency.
+  CLEAR: lwa_currency.
+
+
+
+  lwa_payment-pm = 'C'.
+  lwa_payment-desc = 'Credit card Payment'.
+  APPEND lwa_payment TO lt_payment.
+  CLEAR: lwa_payment.
+  lwa_payment-pm = 'D'.
+  lwa_payment-desc = 'Debit card Payment'.
+  APPEND lwa_payment TO lt_payment.
+  CLEAR: lwa_payment.
+  lwa_payment-pm = 'N'.
+  lwa_payment-desc = 'Netbanking Payment'.
+  APPEND lwa_payment TO lt_payment.
+  CLEAR: lwa_payment.
+
+AT SELECTION-SCREEN ON VALUE-REQUEST FOR s_curr-low.
+
+  CALL FUNCTION 'F4IF_INT_TABLE_VALUE_REQUEST'
+    EXPORTING
+*
+      retfield        = 'curr' " which field will be returned
+      dynpprog        = sy-repid " returns the program id
+      dynpnr          = sy-dynnr "screen number returns
+      dynprofield     = 's_curr-low' "on which field help is assigned
+      value_org       = 'S' "if new help is develoepd 'S'-structured  else 'C'-cell based
+    TABLES
+      value_tab       = lt_currency "in which itemtable value contains
+    EXCEPTIONS
+      parameter_error = 1
+      no_values_found = 2
+      OTHERS          = 3.
+  IF sy-subrc <> 0.
+* Implement suitable error handling here
+  ENDIF.
+
+AT SELECTION-SCREEN ON VALUE-REQUEST FOR s_pm-low.
+
+  CALL FUNCTION 'F4IF_INT_TABLE_VALUE_REQUEST'
+    EXPORTING
+*
+      retfield        = 'PM' " which field will be returned
+      dynpprog        = sy-repid " returns the program id
+      dynpnr          = sy-dynnr "screen number returns
+      dynprofield     = 's_pm-low' "on which field help is assigned
+      value_org       = 'S' "if new help is develoepd 'S'-structured  else 'C'-cell based
+    TABLES
+      value_tab       = lt_payment "in which itemtable value contains
+    EXCEPTIONS
+      parameter_error = 1
+      no_values_found = 2
+      OTHERS          = 3.
+  IF sy-subrc <> 0.
+* Implement suitable error handling here
+  ENDIF.
+
+
+AT SELECTION-SCREEN ON HELP-REQUEST FOR p_chk1.
+  CALL FUNCTION 'HELP_OBJECT_SHOW'
+    EXPORTING
+      dokclass         = 'TX'
+      dokname          = 'ZDOCCUR'
+   
+    TABLES
+      links            = lt_links
+    EXCEPTIONS
+      object_not_found = 1
+      sapscript_error  = 2
+      OTHERS           = 3.
+  IF sy-subrc <> 0.
+* Implement suitable error handling here
+  ENDIF.
+
+AT SELECTION-SCREEN ON s_pm.
+  IF s_pm-low IS NOT INITIAL.
+    IF s_pm-low <> 'C' AND s_pm-low <> 'N' AND s_pm-low <> 'D'.
+      MESSAGE e000(zmessage).
+    ENDIF.
+  ENDIF.
+
+AT SELECTION-SCREEN ON s_curr.
+  IF s_curr-low IS NOT INITIAL.
+    IF s_curr-low <> 'INR' AND s_curr-low <> 'USD'.
+      MESSAGE e001(zmessage).
+    ENDIF.
+  ENDIF.
+
+
+
+
+
+  "at selection screen event
+*
+*AT SELECTION-SCREEN.
+*  IF s_pm-low IS NOT INITIAL.
+*    IF s_pm-low <> 'C' AND s_pm-low <> 'N' AND s_pm-low <> 'D'.
+*      SET CURSOR FIELD 'S_PM-LOW'.
+*      MESSAGE e000(zmessage).
+*    ENDIF.
+*  ENDIF.
+*
+*  IF s_curr-low IS NOT INITIAL.
+*    IF s_curr-low <> 'INR' AND s_curr-low <> 'USD'.
+*      SET CURSOR FIELD 'S_CURR-LOW'.
+*      MESSAGE e001(zmessage).
+*    ENDIF.
+*  ENDIF.
+
+
+
+START-OF-SELECTION.
+  SELECT ono odate pm curr
+    FROM zordh__28
+    INTO TABLE lt_data
+  WHERE odate IN s_odate AND pm IN s_pm AND curr IN s_curr.
+
+  LOOP AT lt_data INTO lwa_data.
+    WRITE:/ lwa_data-ono,15 lwa_data-odate,27 lwa_data-pm, 41 lwa_data-curr.
+  ENDLOOP.
+
+
+AT SELECTION-SCREEN OUTPUT.
+  IF p_chk1 = ' '.
+    LOOP AT SCREEN.
+      IF screen-group1 = 'CUR'.
+        screen-active = 0.
+        MODIFY SCREEN.
+      ENDIF.
+    ENDLOOP.
+  ENDIF.
+  IF p_chk1 = 'X'.
+    LOOP AT SCREEN.
+      IF screen-group1 = 'CUR'.
+        screen-active = 1.
+        MODIFY SCREEN.
+      ENDIF.
+    ENDLOOP.
+  ENDIF.
+
+
+
+  "end of selection
+
+end-OF-SELECTION.
+  WRITE:/ TEXT-003.
+
+TOP-OF-PAGE.
+  WRITE:/ 'PAGE NUMBER', sy-pagno.
+  WRITE:/ 'order number',15'order date', 27 'payent mode',41'Currency'.
+
+end-OF-PAGE.
+  WRITE:/ 'end of page', sy-pagno.
