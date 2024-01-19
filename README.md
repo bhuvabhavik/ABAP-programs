@@ -1,5 +1,7 @@
 my abap notes
 
+<script src="https://gist.github.com/bhuvabhavik/e83492d4a244c186cd1ff63a78d44fee.js"></script>
+
 
 Classical Report Events
 Rahul Mehta
