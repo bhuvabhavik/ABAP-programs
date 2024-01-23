@@ -12,3 +12,16 @@ Modify the Field Catalog Provided by REUSE_ALV_FIELDCATALOG_MERGE
 
 
 
+sorted ALV
+step 1: add this in display function
+ it_sort = lt_sort
+step 2: define and declare
+ DATA: lt_sort TYPE SLIS_T_SORTINFO_ALV,ls_sort TYPE slis_sortinfo_alv.
+step 3:
+just above the function call declare sorting paramneters
+ls_sort-fieldname = 'TA'.
+ls_sort-down = 'X'.
+APPEND ls_Sort to lt_sort.
+
+
+
