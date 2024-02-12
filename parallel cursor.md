@@ -1,3 +1,4 @@
+```abap
 the objective is to get the output with 2 columns id and cost for example id 1 has done total shopping of x amount (the total of all the item cost)
 
 
@@ -112,3 +113,6 @@ ENDLOOP.
 
 *" DISPLAY FINAL TABLE DATA.
 *cl_demo_output=>display_data( IT_FINAL ).
+
+
+```
