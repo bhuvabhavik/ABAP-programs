@@ -1,3 +1,4 @@
+```abap
 REPORT zprg3_creport_2table_bb.
 
 TYPES: BEGIN OF lty_data,
@@ -77,3 +78,4 @@ LOOP AT lt_final INTO lwa_final.
   WRITE:/ lwa_final-ono, lwa_final-oin, lwa_final-odate,
            lwa_final-pm, lwa_final-icost, lwa_final-curr.
 ENDLOOP.
+```
