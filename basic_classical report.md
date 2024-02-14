@@ -1,3 +1,4 @@
+```abap
 *&---------------------------------------------------------------------*
 *& Report ZPRG_CREPORT1_ZORDH_BB
 *&---------------------------------------------------------------------*
@@ -33,3 +34,4 @@ SELECT ono odate ta curr
   LOOP AT lt_data INTO lwa_data.
     WRITE:/ lwa_data-ono, lwa_data-odate, lwa_data-ta, lwa_data-curr.
   ENDLOOP.
+```
